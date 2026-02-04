@@ -1,15 +1,12 @@
 package com.rodgar00.petmatch;
 
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-
-import android.view.inputmethod.EditorInfo;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -36,45 +33,54 @@ public class MainActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.searchBar);
         recyclerView = findViewById(R.id.characterRecycler);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new DogRecycler(this, dogList);
         recyclerView.setAdapter(adapter);
 
         api = ApiClient.getClient().create(ApiInterface.class);
 
-        searchBar.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+        buscarPerro("husky");
 
-                String breed = searchBar.getText()
-                        .toString()
-                        .trim()
-                        .toLowerCase();
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-                if (!breed.isEmpty()) {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String breed = s.toString().trim().toLowerCase();
+
+                if (breed.length() >= 3) {
                     buscarPerro(breed);
                 }
-                return true;
             }
-            return false;
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
     private void buscarPerro(String breed) {
 
-        api.getDogByBreed(breed).enqueue(new Callback<DogResponse>() {
+        int NUM_IMAGENES = 20;
+
+        api.getDogsByBreed(breed, NUM_IMAGENES).enqueue(new Callback<DogResponse>() {
             @Override
             public void onResponse(Call<DogResponse> call, Response<DogResponse> response) {
 
                 if (response.isSuccessful() && response.body() != null) {
 
                     dogList.clear();
-                    dogList.add(new DogModel(breed, response.body().getImageUrl()));
-                    adapter.notifyDataSetChanged();
 
+                    for (String url : response.body().getImageUrls()) {
+                        dogList.add(new DogModel(breed, url));
+                    }
+
+                    adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(MainActivity.this,
-                            "Raza no encontrada 🐕",
-                            Toast.LENGTH_SHORT).show();
+                    dogList.clear();
+                    adapter.notifyDataSetChanged();
                 }
             }
 
@@ -87,3 +93,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
+

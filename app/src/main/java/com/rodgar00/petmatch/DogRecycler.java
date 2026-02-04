@@ -54,8 +54,8 @@ public class DogRecycler extends RecyclerView.Adapter<DogRecycler.DogViewHolder>
 
         public DogViewHolder(@NonNull View itemView) {
             super(itemView);
-            breedText = itemView.findViewById(R.id.textoTarjetaCharacter);
-            dogImage = itemView.findViewById(R.id.imagenTarjetaCharacter);
+            breedText = itemView.findViewById(R.id.textoTarjetaDog);
+            dogImage = itemView.findViewById(R.id.imagenTarjetaDog);
         }
     }
 }
