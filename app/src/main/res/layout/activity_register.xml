@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Teléfono, correo, usuario"
                 android:inputType="textPersonName"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
