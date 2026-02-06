@@ -1,9 +1,5 @@
 package com.rodgar00.petmatch;
 
-import android.app.Activity;
-
-public class Register extends Activity {
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
