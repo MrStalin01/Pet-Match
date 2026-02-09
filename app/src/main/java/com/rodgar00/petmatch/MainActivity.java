@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     ApiInterface api;
 
     Button btn1, btn2, btn3, btn4;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,16 +59,19 @@ public class MainActivity extends AppCompatActivity {
 
         api = ApiClient.getClient().create(ApiInterface.class);
 
-        btn1.setOnClickListener(v -> seleccionarBoton(btn1, "husky"));
+        btn1.setOnClickListener(v -> seleccionarBoton(btn1, "husky")); // Ejemplo: Adoptar carga huskys
         btn2.setOnClickListener(v -> seleccionarBoton(btn2, "labrador"));
         btn3.setOnClickListener(v -> seleccionarBoton(btn3, "beagle"));
         btn4.setOnClickListener(v -> seleccionarBoton(btn4, "pug"));
 
         seleccionarBoton(btn1, "husky");
 
+        buscarPerro("husky");
+
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -80,9 +82,24 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
+    }
+
+    private void seleccionarBoton(Button boton, String raza) {
+        desmarcarTodos();
+        boton.setSelected(true); // Esto activa el state_selected="true" del XML
+        buscarPerro(raza);
+    }
+
+    private void desmarcarTodos() {
+        btn1.setSelected(false);
+        btn2.setSelected(false);
+        btn3.setSelected(false);
+        btn4.setSelected(false);
+        //Menu desplegable
         menuHamburguesa.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.END));
 
         if (closeMenu != null) {
