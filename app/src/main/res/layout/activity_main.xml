@@ -6,6 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blanco_hueso"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -45,12 +46,10 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:boxBackgroundColor="@android:color/transparent"
-            app:boxCornerRadiusTopStart="15dp"
-            app:boxCornerRadiusTopEnd="15dp"
-            app:boxCornerRadiusBottomStart="15dp"
-            app:boxCornerRadiusBottomEnd="15dp"
-            android:background="@color/blanco_hueso"
+            android:layout_margin="4dp"
+            android:elevation="6dp"
+            app:boxBackgroundMode="none"
+            android:background="@drawable/bg_button_normal"
             android:textColorHint="@color/Placeholder">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -60,7 +59,9 @@
                 android:hint="Introduce una raza"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
+                android:padding="12dp"
                 android:textColor="@color/black"
+                android:background="@android:color/transparent"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,85 +72,88 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:paddingBottom="5dp"
-            android:layout_marginBottom="8dp"
+            android:padding="10dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:layout_marginBottom="1dp"
             android:layout_marginTop="8dp">
 
             <Button
                 android:id="@+id/btn1"
-                android:layout_width="10dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
                 android:layout_weight="1"
+                android:layout_margin="5dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:elevation="8dp"
+                android:translationZ="4dp"
+                android:stateListAnimator="@null"
+                android:background="@drawable/btn_selector"
+                app:backgroundTint="@null"
                 android:text="Adoptar"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:translationZ="10dp"
-                app:backgroundTint="@null"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                android:textAllCaps="false"
-                android:background="@drawable/btn_selector" />
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/btn2"
-                android:layout_width="10dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
                 android:layout_weight="1"
+                android:layout_margin="5dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="Encontrados"
-                android:textSize="12sp"
-                android:textAllCaps="false"
+                android:elevation="8dp"
+                android:translationZ="4dp"
+                android:stateListAnimator="@null"
                 android:background="@drawable/btn_selector"
+                app:backgroundTint="@null"
+                android:text="Encontrados"
+                android:textSize="11sp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:translationZ="10dp"
-                app:backgroundTint="@null"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"/>
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/btn3"
-                android:layout_width="10dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
                 android:layout_weight="1"
+                android:layout_margin="5dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="Perdidos"
-                android:textSize="12sp"
-                android:textAllCaps="false"
+                android:elevation="8dp"
+                android:translationZ="4dp"
+                android:stateListAnimator="@null"
                 android:background="@drawable/btn_selector"
+                app:backgroundTint="@null"
+                android:text="Perdidos"
+                android:textSize="11sp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:translationZ="10dp"
-                app:backgroundTint="@null"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"/>
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/btn4"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_weight="1"
+                android:layout_margin="5dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="Favoritos"
-                android:textSize="12sp"
-                android:textAllCaps="false"
+                android:elevation="8dp"
+                android:translationZ="4dp"
+                android:stateListAnimator="@null"
                 android:background="@drawable/btn_selector"
+                app:backgroundTint="@null"
+                android:text="Favoritos"
+                android:textSize="11sp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:translationZ="10dp"
-                app:backgroundTint="@null"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"/>
+                android:textAllCaps="false" />
+
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
