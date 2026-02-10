@@ -20,6 +20,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // --- Inicializar vistas ---
         searchBar = findViewById(R.id.searchBar);
         recyclerView = findViewById(R.id.characterRecycler);
         btn1 = findViewById(R.id.btn1);
@@ -61,15 +63,16 @@ public class MainActivity extends AppCompatActivity {
 
         api = ApiClient.getClient().create(ApiInterface.class);
 
-        btn1.setOnClickListener(v -> seleccionarBoton(btn1, "husky")); // Ejemplo: Adoptar carga huskys
-        btn2.setOnClickListener(v -> seleccionarBoton(btn2, "labrador"));
-        btn3.setOnClickListener(v -> seleccionarBoton(btn3, "beagle"));
-        btn4.setOnClickListener(v -> seleccionarBoton(btn4, "pug"));
+        // --- Botones ---
+        btn1.setOnClickListener(v -> seleccionarBoton(btn1, "adoptados"));
+        btn2.setOnClickListener(v -> seleccionarBoton(btn2, "encontrados"));
+        btn3.setOnClickListener(v -> seleccionarBoton(btn3, "perdidos"));
+        btn4.setOnClickListener(v -> seleccionarBoton(btn4, "favoritos"));
 
-        seleccionarBoton(btn1, "husky");
+        // Carga inicial
+        seleccionarBoton(btn1, "adoptar");
 
-        buscarPerro("husky");
-
+        // --- Barra de búsqueda (opcional) ---
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -77,11 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String breed = s.toString().trim().toLowerCase();
-
-                if (breed.length() >= 3) {
-                    buscarPerro(breed);
-                }
+                // Aquí puedes implementar búsqueda dentro de dogList si quieres
             }
 
             @Override
@@ -89,12 +88,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // --- Menu lateral ---
+        menuHamburguesa.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.END));
+        closeMenu.setOnClickListener(v -> drawerLayout.closeDrawer(GravityCompat.END));
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_profile) {
+                startActivity(new Intent(MainActivity.this, Profile.class));
+            } else if (item.getItemId() == R.id.nav_pets) {
+                startActivity(new Intent(MainActivity.this, Pets.class));
+            } else if (item.getItemId() == R.id.nav_exit) {
+                startActivity(new Intent(MainActivity.this, Usuarios.class));
+            } else if (item.getItemId() == R.id.nav_refugio) {
+                Intent intent = new Intent(this, Refugio.class);
+                startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.END);
+            return true;
+        });
     }
 
-    private void seleccionarBoton(Button boton, String raza) {
+    // --- Selección de botón ---
+    private void seleccionarBoton(Button boton, String tabla) {
         desmarcarTodos();
-        boton.setSelected(true); // Esto activa el state_selected="true" del XML
-        buscarPerro(raza);
+        boton.setSelected(true);
+        buscarAnimales(tabla);
     }
 
     private void desmarcarTodos() {
@@ -102,56 +119,49 @@ public class MainActivity extends AppCompatActivity {
         btn2.setSelected(false);
         btn3.setSelected(false);
         btn4.setSelected(false);
-        //Menu desplegable
-        menuHamburguesa.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.END));
-
-        closeMenu.setOnClickListener(v -> drawerLayout.closeDrawer(GravityCompat.END));
-
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_profile) {
-                Toast.makeText(this, "Mi Perfil", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.nav_pets) {
-                Toast.makeText(this, "Mascotas", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.nav_exit) {
-                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.nav_refugio) {
-                Intent intent = new Intent(this, Refugio.class);
-                startActivity(intent);
-            }
-            drawerLayout.closeDrawer(GravityCompat.END);
-            return true;
-        });
     }
 
-    private void buscarPerro(String breed) {
+    // --- Buscar animales según tabla ---
+    private void buscarAnimales(String tabla) {
+        dogList.clear();
+        Call<List<DogModel>> call;
 
-        int NUM_IMAGENES = 20;
+        switch (tabla) {
+            case "adoptados":
+                call = api.getAdoptados();
+                break;
+            case "encontrados":
+                call = api.getEncontrados();
+                break;
+            case "perdidos":
+                call = api.getPerdidos();
+                break;
+            case "favoritos":
+                call = api.getFavoritos();
+                break;
+            default:
+                return;
+        }
 
-        api.getDogsByBreed(breed, NUM_IMAGENES).enqueue(new Callback<DogResponse>() {
+        call.enqueue(new Callback<List<DogModel>>() {
             @Override
-            public void onResponse(Call<DogResponse> call, Response<DogResponse> response) {
-
+            public void onResponse(Call<List<DogModel>> call, Response<List<DogModel>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
-                    dogList.clear();
-
-                    for (String url : response.body().getImageUrls()) {
-                        dogList.add(new DogModel(breed, url));
-                    }
-
+                    dogList.addAll(response.body());
                     adapter.notifyDataSetChanged();
                 } else {
-                    dogList.clear();
-                    adapter.notifyDataSetChanged();
+                    Toast.makeText(MainActivity.this,
+                            "Error en la respuesta: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<DogResponse> call, Throwable t) {
+            public void onFailure(Call<List<DogModel>> call, Throwable t) {
                 Toast.makeText(MainActivity.this,
-                        "Error de conexión",
-                        Toast.LENGTH_SHORT).show();
+                        "Error de conexión: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+                t.printStackTrace(); // Para ver detalles en Logcat
             }
         });
     }
