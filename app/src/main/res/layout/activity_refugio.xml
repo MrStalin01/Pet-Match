@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -164,7 +164,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="El Refugio municipal de Aluche es una organización protectora de animales especializada desde 2000. Nº de tlf: 600-432-342 | Dirección: Gran via 1 | Contacto: RefugioMadrid@gmail.com"
+                            android:text="El Refugio municipal de Aluche es una organización protectora de animales especializada desde 2000. Nº de tlf: 600-432-342 | Dirección: Gran via 1 | Contacto: RefugioAluche@gmail.com"
                             android:textColor="@android:color/black"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -228,7 +228,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="El Refugio municipal de Getafe es una organización protectora de animales especializada desde 1999. Nº de tlf: 600-432-342 | Dirección: Gran via 1 | Contacto: RefugioMadrid@gmail.com"
+                            android:text="El Refugio municipal de Getafe es una organización protectora de animales especializada desde 1999. Nº de tlf: 600-432-342 | Dirección: Gran via 1 | Contacto: RefugioGetafe@gmail.com"
                             android:textColor="@android:color/black"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -291,7 +291,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="El Refugio municipal de Fuenlabrada es una organización protectora de animales especializada desde 2010. Nº de tlf: 600-432-342 | Dirección: Gran via 1 | Contacto: RefugioMadrid@gmail.com"
+                            android:text="El Refugio municipal de Fuenlabrada es una organización protectora de animales especializada desde 2010. Nº de tlf: 600-432-342 | Dirección: Gran via 1 | Contacto: RefugioFuenlabrada@gmail.com"
                             android:textColor="@android:color/black"
                             android:textSize="14sp" />
                     </LinearLayout>
