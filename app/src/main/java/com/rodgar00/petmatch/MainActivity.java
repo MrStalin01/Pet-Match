@@ -14,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -70,6 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Carga inicial
         seleccionarBoton(btn1, "adoptados");
+        // --- Floating Action Button ---
+        FloatingActionButton buttonAdd = findViewById(R.id.buttonAdd);
+        buttonAdd.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AgregarAnimalActivity.class);
+            startActivity(intent);
+        });
+
 
         // --- Barra de búsqueda (opcional) ---
         searchBar.addTextChangedListener(new TextWatcher() {
