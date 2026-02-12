@@ -11,17 +11,18 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 public interface ApiInterface {
     @Multipart
-    @POST("adoptados/") // URL relativa
+    @POST("crear_animal/") // <-- cambiar la URL a la nueva
     Call<DogModel> crearAnimal(
-                @Part("nombre") RequestBody nombre,
-                @Part("duenyo") RequestBody duenyo,
-                @Part("edad") RequestBody edad,
-                @Part("localizacion") RequestBody localizacion,
-                @Part("descripcion") RequestBody descripcion,
-                @Part("categoria") RequestBody categoria,
-                @Part("raza") RequestBody raza,
-                @Part MultipartBody.Part imagen
-        );
+            @Part("nombre") RequestBody nombre,
+            @Part("duenyo") RequestBody duenyo,
+            @Part("edad") RequestBody edad,
+            @Part("localizacion") RequestBody localizacion,
+            @Part("descripcion") RequestBody descripcion,
+            @Part("categoria") RequestBody categoria,
+            @Part("raza") RequestBody raza,
+            @Part MultipartBody.Part imagen
+    );
+
 
     @GET("adoptados/")
     Call<List<DogModel>> getAdoptados();

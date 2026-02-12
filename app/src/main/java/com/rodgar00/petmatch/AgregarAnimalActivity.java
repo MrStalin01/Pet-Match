@@ -3,8 +3,11 @@ package com.rodgar00.petmatch;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -86,12 +89,21 @@ public class AgregarAnimalActivity extends AppCompatActivity {
 
         MultipartBody.Part imagenPart = null;
         if (imageUri != null) {
-            File file = new File(FileUtils.getPath(this, imageUri)); // Necesitas FileUtils para obtener path real
+            if (Build.VERSION.SDK_INT >= 30){
+                if (!Environment.isExternalStorageManager()){
+                    Intent getpermission = new Intent();
+                    getpermission.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                    startActivity(getpermission);
+                }
+
+                File file = new File(FileUtils.getPath(this, imageUri)); // Necesitas FileUtils para obtener path real
             RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
             imagenPart = MultipartBody.Part.createFormData("imagen", file.getName(), requestFile);
-        }
 
-        Call<DogModel> call = api.crearAnimal(nombre, duenyo, edad, localizacion, descripcion, categoria, raza, imagenPart);
+            }
+
+
+            Call<DogModel> call = api.crearAnimal(nombre, duenyo, edad, localizacion, descripcion, categoria, raza, imagenPart);
         call.enqueue(new Callback<DogModel>() {
             @Override
             public void onResponse(Call<DogModel> call, Response<DogModel> response) {
@@ -110,4 +122,4 @@ public class AgregarAnimalActivity extends AppCompatActivity {
             }
         });
     }
-}
+}}
