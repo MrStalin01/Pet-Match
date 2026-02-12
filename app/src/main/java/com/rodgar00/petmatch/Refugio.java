@@ -23,6 +23,8 @@ public class Refugio extends Activity {
             drawerLayout.openDrawer(GravityCompat.END);
         });
 
+        //La tarjeta de cada Refugio
+
         CardView cardRefugio = findViewById(R.id.cardrefugio1);
         final LinearLayout layoutDetalles = findViewById(R.id.layoutDetalles);
 
