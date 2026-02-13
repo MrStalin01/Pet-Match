@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".ProfileDog">
 
 
@@ -14,6 +16,8 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingBottom="20dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         tools:ignore="MissingConstraints">
 
         <ImageView
@@ -44,9 +48,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:text="Mi Perfil"
+        android:text="Perfil"
         android:textSize="28dp"
         android:textStyle="bold"
+        android:padding="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLogo" />
 
@@ -55,7 +60,7 @@
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_marginTop="24dp"
-        android:padding="4dp"
+        android:padding="8dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,52 +72,59 @@
         android:id="@+id/tvDogName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="22dp"
+        android:layout_marginTop="30dp"
+        android:padding="4dp"
+        android:textSize="40dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/TvDogPicture"
+        app:layout_constraintStart_toStartOf="@id/TvDogPicture"
         app:layout_constraintTop_toBottomOf="@+id/TvDogPicture" />
+
     <TextView
         android:id="@+id/tvDogDuenio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="33dp"
-        android:textSize="44dp"
+        android:layout_marginTop="10dp"
+        android:textSize="15dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TvDogPicture" />
+        android:padding="4dp"
+        app:layout_constraintEnd_toEndOf="@id/tvDogName"
+        app:layout_constraintStart_toStartOf="@id/tvDogName"
+        app:layout_constraintTop_toBottomOf="@+id/tvDogName" />
 
     <TextView
         android:id="@+id/tvDogCategoria"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="99dp"
+        android:layout_marginTop="10dp"
         android:textColor="@color/Adopt"
+        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDogName" />
-
+        app:layout_constraintTop_toBottomOf="@+id/tvUserLocation" />
 
     <TextView
         android:id="@+id/tvUserLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="66dp"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
         android:text="Madrid, España"
         android:textColor="@color/Adopt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDogName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDogDuenio" />
+
     <TextView
         android:id="@+id/tvDogRefugio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="134dp"
+        android:layout_marginTop="10dp"
         android:text="Madrid, España"
         android:textColor="@color/Adopt"
+        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDogName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDogCategoria" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
