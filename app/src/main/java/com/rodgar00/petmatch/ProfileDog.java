@@ -9,11 +9,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 public class ProfileDog extends Activity {
+
+
     ImageView imageView;
     TextView nombre, duenyo, categoria, refugio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_animal);
 
