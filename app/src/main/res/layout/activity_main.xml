@@ -22,17 +22,21 @@
 
             <!-- LOGO Y MENÚ -->
             <LinearLayout
+                android:id="@+id/tvLogo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingBottom="20dp">
+                android:paddingBottom="20dp"
+                tools:ignore="MissingConstraints">
 
                 <ImageView
                     android:id="@+id/logoApp"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/pet_match2" />
+                    android:layout_marginTop="5dp"
+                    android:layout_width="90dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/pet_match2"
+                    />
 
                 <View
                     android:layout_width="0dp"
