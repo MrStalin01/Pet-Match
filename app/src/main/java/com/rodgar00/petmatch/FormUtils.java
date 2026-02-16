@@ -1,47 +1,57 @@
 package com.rodgar00.petmatch;
 
 
-import com.google.android.material.textfield.TextInputLayout;
-import org.mindrot.jbcrypt.BCrypt;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 public class FormUtils {
 
-    private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$");
+    private static final String PREFS_NAME = "MY_APP_PREFS";
+    private static final String KEY_ACCESS_TOKEN = "ACCESS_TOKEN";
+    private static final String KEY_REFRESH_TOKEN = "REFRESH_TOKEN";
+    private static final String KEY_EMAIL = "USER_EMAIL";
+    private static final String KEY_USERNAME = "USERNAME";
 
-    public boolean isTILEmpty(TextInputLayout textInputLayout) {
-        return String.valueOf(textInputLayout.getEditText().getText()).isEmpty();
+    // Guardar tokens y datos del usuario
+    public static void saveUserData(Context context, String accessToken, String refreshToken, String email, String username) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(KEY_ACCESS_TOKEN, accessToken);
+        editor.putString(KEY_REFRESH_TOKEN, refreshToken);
+        editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_USERNAME, username);
+        editor.apply();
     }
 
-    public String getTILText(TextInputLayout textInputLayout) {
-        return String.valueOf(textInputLayout.getEditText().getText());
+    // Obtener Access Token
+    public static String getAccessToken(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_ACCESS_TOKEN, null);
     }
 
-    public String generateHashedPassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
+    // Obtener Refresh Token
+    public static String getRefreshToken(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_REFRESH_TOKEN, null);
     }
 
-    public boolean checkPassword(String candidate, String hashed) {
-        return BCrypt.checkpw(candidate, hashed);
+    // Obtener Email
+    public static String getEmail(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_EMAIL, null);
     }
 
-
-    public boolean arePasswordsTheSame(TextInputLayout pass1, TextInputLayout pass2) {
-        String p1 = getTILText(pass1);
-        String p2 = getTILText(pass2);
-        return !p1.isEmpty() && p1.equals(p2);
+    // Obtener Username
+    public static String getUsername(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_USERNAME, null);
     }
 
-    public boolean isEmailCorrect(TextInputLayout emailTIL) {
-        String email = getTILText(emailTIL);
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
-        return matcher.matches();
+    // Limpiar datos (Logout)
+    public static void clearUserData(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
     }
-
-    public boolean checkUser(String inputUser, String savedUser) {
-        return inputUser.equals(savedUser);
-    }
-
 }

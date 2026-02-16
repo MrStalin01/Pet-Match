@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     DogRecycler adapter;
 
     ArrayList<DogModel> dogList = new ArrayList<>();
-    ArrayList<DogModel> listaCompleta = new ArrayList<>(); // <- copia original
+    ArrayList<DogModel> listaCompleta = new ArrayList<>();
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Carga inicial
         seleccionarBoton(btn1, "adoptados");
+
         // Floating Action Button
         FloatingActionButton buttonAdd = findViewById(R.id.buttonAdd);
         buttonAdd.setOnClickListener(v -> {
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     dogList.addAll(listaCompleta);
                 } else {
                     for (DogModel dog : listaCompleta) {
-                        if (dog.getRaza().toLowerCase().contains(texto)) {
+                        if (dog.getRaza().toLowerCase().contains(texto) || (dog.getCategoria().toLowerCase().contains(texto))) {
                             dogList.add(dog);
                         }
                     }
@@ -147,6 +148,9 @@ public class MainActivity extends AppCompatActivity {
 
     // --- Buscar animales según tabla ---
     private void buscarAnimales(String tabla) {
+
+        // AVISAMOS AL ADAPTER EN QUÉ PESTAÑA ESTAMOS
+        adapter.setTablaActual(tabla);
 
         Call<List<DogModel>> call;
 

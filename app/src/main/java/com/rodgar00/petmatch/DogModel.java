@@ -28,15 +28,12 @@ public class DogModel {
     @SerializedName("esRefugio")
     private boolean esRefugio;
 
-    // Imagen como URL o null (si quieres subir foto, hay que usar Multipart)
     @SerializedName("imagen")
     private String imagen;
 
-
-
-    // Constructor
+    // Constructor completo
     public DogModel(String nombre, String duenyo, int edad, String localizacion,
-                    String descripcion, String categoria, boolean esRefugio, String imagen) {
+                    String descripcion, String categoria, boolean esRefugio, String raza, String imagen) {
         this.nombre = nombre;
         this.duenyo = duenyo;
         this.edad = edad;
@@ -44,17 +41,18 @@ public class DogModel {
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.esRefugio = esRefugio;
+        this.raza = raza;
         this.imagen = imagen;
     }
 
-    // Getters si necesitas
-    public String getNombre() { return nombre; }
-    public String getDuenyo() { return duenyo; }
+    // Getters con control de null
+    public String getNombre() { return nombre != null ? nombre : "Sin nombre"; }
+    public String getDuenyo() { return duenyo != null ? duenyo : "Desconocido"; }
     public int getEdad() { return edad; }
-    public String getLocalizacion() { return localizacion; }
-    public String getDescripcion() { return descripcion; }
-    public String getRaza() { return raza; }
-    public String getCategoria() { return categoria; }
+    public String getLocalizacion() { return localizacion != null ? localizacion : "Desconocida"; }
+    public String getDescripcion() { return descripcion != null ? descripcion : "Sin descripción"; }
+    public String getRaza() { return raza != null ? raza : "Desconocida"; }
+    public String getCategoria() { return categoria != null ? categoria : "Desconocida"; }
     public boolean getEsRefugio() { return esRefugio; }
-    public String getImagen() { return imagen; }
+    public String getImagen() { return imagen != null ? imagen : ""; }
 }

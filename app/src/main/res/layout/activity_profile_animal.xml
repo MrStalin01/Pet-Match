@@ -5,126 +5,173 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F5F6FA" ><LinearLayout
+    android:id="@+id/tvLogo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
     android:padding="16dp"
-    tools:context=".ProfileDog">
+    android:background="@android:color/white"
+    android:elevation="4dp"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:ignore="MissingConstraints">
 
+    <ImageView
+        android:id="@+id/logoApp"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:src="@drawable/pet_match2"/>
 
-    <LinearLayout
-        android:id="@+id/tvLogo"
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <ImageView
+        android:id="@+id/menuHamburguesa"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_menu"
+        android:clickable="true"
+        android:focusable="true"/>
+</LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingBottom="20dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        tools:ignore="MissingConstraints">
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvLogo"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:id="@+id/logoApp"
-            android:layout_marginTop="5dp"
-            android:layout_width="90dp"
-            android:layout_height="60dp"
-            android:src="@drawable/pet_match2"
-            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:gravity="center_horizontal">
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            <TextView
+                android:id="@+id/tvDogTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Perfil de Mascota"
+                android:textSize="24sp"
+                android:textColor="#333333"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
 
-        <ImageView
-            android:id="@+id/menuHamburguesa"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_menu"
-            android:clickable="true"
-            android:focusable="true" />
-    </LinearLayout>
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/TvDogPicture"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                app:strokeColor="#D1D1D1"
+                app:strokeWidth="2dp"
+                app:cornerSize="90dp" /> <TextView
+            android:id="@+id/tvDogName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="#1A1A1A"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            tools:text="Max"/>
 
-    <TextView
-        android:id="@+id/tvDogTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
-        android:text="Perfil"
-        android:textSize="28dp"
-        android:textStyle="bold"
-        android:padding="4dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLogo" />
+            <TextView
+                android:id="@+id/tvDogDuenio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="16sp"
+                android:textColor="#666666"
+                tools:text="Dueño: Juan Pérez"/>
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/TvDogPicture"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_marginTop="24dp"
-        android:padding="8dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDogTitle"
-        app:strokeColor="#E0E0E0"
-        app:strokeWidth="2dp" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@android:color/white">
 
-    <TextView
-        android:id="@+id/tvDogName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:padding="4dp"
-        android:textSize="40dp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/TvDogPicture"
-        app:layout_constraintStart_toStartOf="@id/TvDogPicture"
-        app:layout_constraintTop_toBottomOf="@+id/TvDogPicture" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-    <TextView
-        android:id="@+id/tvDogDuenio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        android:padding="4dp"
-        app:layout_constraintEnd_toEndOf="@id/tvDogName"
-        app:layout_constraintStart_toStartOf="@id/tvDogName"
-        app:layout_constraintTop_toBottomOf="@+id/tvDogName" />
+                    <TextView
+                        android:id="@+id/tvUserLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/Adopt"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp"
+                        tools:text="📍 Madrid, España"/>
 
-    <TextView
-        android:id="@+id/tvDogCategoria"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/Adopt"
-        android:padding="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserLocation" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
 
-    <TextView
-        android:id="@+id/tvUserLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_marginTop="10dp"
-        android:text="Madrid, España"
-        android:textColor="@color/Adopt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDogDuenio" />
+                        <TextView
+                            android:id="@+id/tvDogCategoria"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="15sp"
+                            android:textColor="#444444"
+                            tools:text="Categoría: Perro"/>
 
-    <TextView
-        android:id="@+id/tvDogRefugio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Madrid, España"
-        android:textColor="@color/Adopt"
-        android:padding="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDogCategoria" />
+                        <TextView
+                            android:id="@+id/tvDogRaza"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="15sp"
+                            android:textColor="#444444"
+                            tools:text="Raza: Labrador"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvDogRefugio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="#444444"
+                        android:layout_marginBottom="16dp"
+                        tools:text="Refugio: Sí"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#EAEAEA"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sobre mí"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#333333"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:id="@+id/TVDogDescripcion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:lineSpacingExtra="4dp"
+                        android:textColor="#555555"
+                        tools:text="Es un perro muy amigable y juguetón..."/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

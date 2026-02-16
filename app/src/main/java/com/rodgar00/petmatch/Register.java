@@ -1,124 +1,128 @@
 package com.rodgar00.petmatch;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class Register extends AppCompatActivity {
 
-    FormUtils formUtils = new FormUtils();
+    private TextInputLayout registerTILEmail, registerTILPassword, registerTILPasswordConfirm;
+    private Button registerButton;
+    private TextView registerTVLogin, loginTVInvitado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        // Bind views según tu XML
+        registerTILEmail = findViewById(R.id.RegisterTILEmail);
+        registerTILPassword = findViewById(R.id.RegisterTILPassword);
+        registerTILPasswordConfirm = findViewById(R.id.RegisterTILPasswordConfirm);
+        registerButton = findViewById(R.id.RegisterButton);
+        registerTVLogin = findViewById(R.id.RegisterTVLogin);
+        loginTVInvitado = findViewById(R.id.LoginTVInvitado);
 
-        TextInputLayout registerTILemail = findViewById(R.id.RegisterTILEmail);
-        TextView loginTVInvitado = findViewById(R.id.LoginTVInvitado);
-        TextInputLayout registerTILpassword = findViewById(R.id.RegisterTILPassword);
-        TextInputLayout registerTILpasswordDoubleCheck = findViewById(R.id.RegisterTILPasswordConfirm);
-        Button registerButton = findViewById(R.id.RegisterButton);
-        TextView registerTVLogin = findViewById(R.id.RegisterTVLogin);
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-
-        registerTILemail.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!formUtils.isEmailCorrect(registerTILemail)) {
-                    registerTILemail.setErrorEnabled(true);
-                    registerTILemail.setError("Tu email es inválido");
-                } else {
-                    registerTILemail.setErrorEnabled(false);
-                }
-            }
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        });
-
-        registerTILpassword.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (formUtils.isTILEmpty(registerTILpassword)) {
-                    registerTILpassword.setErrorEnabled(true);
-                    registerTILpassword.setError("Tu contraseña está vacía");
-                } else {
-                    registerTILpassword.setErrorEnabled(false);
-                }
-            }
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        });
-
+        // Botón registrar
         registerButton.setOnClickListener(v -> {
-            boolean canContinue = true;
+            String email = registerTILEmail.getEditText().getText().toString().trim();
+            String password1 = registerTILPassword.getEditText().getText().toString().trim();
+            String password2 = registerTILPasswordConfirm.getEditText().getText().toString().trim();
 
-
-            if (!formUtils.isEmailCorrect(registerTILemail)) {
-                registerTILemail.setErrorEnabled(true);
-                registerTILemail.setError("Tu email está mal escrito");
-                canContinue = false;
+            if (email.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
+                Toast.makeText(Register.this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            if (!formUtils.arePasswordsTheSame(registerTILpassword, registerTILpasswordDoubleCheck)) {
-                registerTILpasswordDoubleCheck.setErrorEnabled(true);
-                registerTILpasswordDoubleCheck.setError("La contraseña no es válida");
-
-                if (formUtils.isTILEmpty(registerTILpassword) && formUtils.isTILEmpty(registerTILpasswordDoubleCheck)) {
-                    Toast.makeText(Register.this, "No has escrito nada en el campo contraseña", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(Register.this, "Las dos contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-                }
-                canContinue = false;
+            if (!password1.equals(password2)) {
+                Toast.makeText(Register.this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            if (canContinue) {
-                editor.putString("email", formUtils.getTILText(registerTILemail));
-                editor.putString("password", formUtils.generateHashedPassword(formUtils.getTILText(registerTILpassword)));
-                editor.apply();
-
-                Toast.makeText(Register.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Register.this, MainActivity.class);
-                startActivity(intent);
-            }
+            // Llamada al backend
+            registerUser(email, password1, password2);
         });
 
-        loginTVInvitado.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentMain = new Intent(Register.this, MainActivity.class);
-                startActivity(intentMain);
-                finish();
-            }
-        });
-
+        // Botón login
         registerTVLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(Register.this, Login.class);
-            startActivity(intent);
+            startActivity(new Intent(Register.this, Login.class));
         });
+
+        // Botón invitado
+        loginTVInvitado.setOnClickListener(v -> {
+            startActivity(new Intent(Register.this, MainActivity.class));
+            finish();
+        });
+    }
+
+    private void registerUser(String email, String password1, String password2) {
+        new Thread(() -> {
+            try {
+                URL url = new URL("http://10.0.2.2:8000/api/registro/");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setDoOutput(true);
+
+                JSONObject body = new JSONObject();
+                body.put("email", email);
+                body.put("username", email.split("@")[0]);
+                body.put("first_name", "Usuario");
+                body.put("last_name", "Prueba");
+                body.put("password1", password1);
+                body.put("password2", password2);
+
+                OutputStream os = conn.getOutputStream();
+                os.write(body.toString().getBytes("UTF-8"));
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+                InputStream is = (responseCode == 200 || responseCode == 201) ? conn.getInputStream() : conn.getErrorStream();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                StringBuilder result = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) result.append(line);
+                reader.close();
+
+                JSONObject response = new JSONObject(result.toString());
+
+                if (response.getBoolean("success")) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(Register.this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(Register.this, Login.class));
+                        finish();
+                    });
+                } else {
+                    runOnUiThread(() -> {
+                        try {
+                            Toast.makeText(Register.this, "Error: " + response.getJSONArray("errors").getString(0), Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(Register.this, "Error de conexión", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
     }
 }
