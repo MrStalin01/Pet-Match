@@ -76,7 +76,7 @@
                 app:strokeColor="#E0E0E0" />
 
             <Button
-                android:id="@+id/btnAgregarAnimal"
+                android:id="@+id/btnSeleccionarImagen"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:backgroundTint="@color/verde3"
