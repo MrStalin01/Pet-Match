@@ -6,11 +6,16 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.bumptech.glide.Glide;
+import com.google.android.material.navigation.NavigationView;
 
 public class ProfileDog extends Activity {
 
-
+    ImageView closeMenu;
+    NavigationView navigationView;
     ImageView imageView;
     TextView nombre, duenyo, categoria, refugio;
 
@@ -19,6 +24,13 @@ public class ProfileDog extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_animal);
+        DrawerLayout drawerLayout = findViewById(R.id.main);
+        ImageView logoApp = findViewById(R.id.logoApp);
+
+        logoApp.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileDog.this, MainActivity.class);
+            startActivity(intent);
+        });
 
         imageView = findViewById(R.id.TvDogPicture);
         nombre = findViewById(R.id.tvDogName);
@@ -44,5 +56,34 @@ public class ProfileDog extends Activity {
         Glide.with(this)
                 .load(imagenDog)
                 .into(imageView);
+
+        ImageView menuHamburguesa = findViewById(R.id.menuHamburguesa);
+        closeMenu = findViewById(R.id.Close);
+        navigationView = findViewById(R.id.navView);
+
+        menuHamburguesa.setOnClickListener(v -> {
+            drawerLayout.openDrawer(GravityCompat.END);
+        });
+
+        closeMenu.setOnClickListener(v -> {
+            drawerLayout.closeDrawer(GravityCompat.END);
+        });
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_profile) {
+                startActivity(new Intent(ProfileDog.this, Profile.class));
+            } else if (id == R.id.nav_pets) {
+                startActivity(new Intent(ProfileDog.this, Pets.class));
+            } else if (id == R.id.nav_refugio) {
+                startActivity(new Intent(ProfileDog.this, Refugio.class));
+            } else if (id == R.id.nav_exit) {
+                startActivity(new Intent(ProfileDog.this, Usuarios.class));
+            }
+
+            drawerLayout.closeDrawer(GravityCompat.END);
+            return true;
+        });
     }
 }
