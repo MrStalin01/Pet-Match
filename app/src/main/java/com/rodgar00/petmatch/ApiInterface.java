@@ -2,6 +2,7 @@ package com.rodgar00.petmatch;
 
 import java.util.List;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -13,7 +14,8 @@ import retrofit2.http.Path;
 
 public interface ApiInterface {
     @Multipart
-    @POST("crear_animal/") // <-- cambiar la URL a la nueva
+    @POST("crear_animal/")
+        // <-- cambiar la URL a la nueva
     Call<DogModel> crearAnimal(
             @Part("nombre") RequestBody nombre,
             @Part("duenyo") RequestBody duenyo,
@@ -39,4 +41,18 @@ public interface ApiInterface {
 
     @GET("favoritos/")
     Call<List<DogModel>> getFavoritos();
+
+    @Multipart
+    @POST("favoritos/")
+    Call<Void> guardarFavorito(
+            @Part("nombre") RequestBody nombre,
+            @Part("duenyo") RequestBody duenyo,
+            @Part("edad") RequestBody edad,
+            @Part("localizacion") RequestBody localizacion,
+            @Part("descripcion") RequestBody descripcion,
+            @Part("categoria") RequestBody categoria,
+            @Part("es_refugio") RequestBody esRefugio,
+            @Part("raza") RequestBody raza,
+            @Part okhttp3.MultipartBody.Part imagen
+    );
 }

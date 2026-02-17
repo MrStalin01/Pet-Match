@@ -53,16 +53,12 @@ public class ProfileDog extends Activity {
         String descripcionDog = intent.getStringExtra("descripcion");
         String imagenDog = intent.getStringExtra("imagen");
 
-        // Asignar datos
-        nombre.setText(nombreDog);
-        duenyo.setText("Dueño: " + duenyoDog);
-        categoria.setText("Categoría: " + categoriaDog);
-        refugio.setText("Refugio: " + refugioDog);
-
-        Glide.with(this)
-                .load(imagenDog)
-                .into(imageView);
-
+        // Cargar imagen con Glide solo si hay una URL válida
+        if (imagenDog != null && !imagenDog.isEmpty()) {
+            Glide.with(this)
+                    .load(imagenDog)
+                    .into(imageView);
+        }
         ImageView menuHamburguesa = findViewById(R.id.menuHamburguesa);
         closeMenu = findViewById(R.id.Close);
         navigationView = findViewById(R.id.navView);
