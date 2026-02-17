@@ -1,147 +1,129 @@
 package com.rodgar00.petmatch;
 
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class Login extends AppCompatActivity {
 
+    private TextInputLayout loginTILEmail, loginTILPassword;
+    private Button loginButton;
+    private TextView loginTVInvitado, loginTVRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        // Bind views
+        loginTILEmail = findViewById(R.id.LoginTILuserName);  // TextInputLayout para email
+        loginTILPassword = findViewById(R.id.LoginTILpassword);
+        loginButton = findViewById(R.id.LoginButton);
+        loginTVInvitado = findViewById(R.id.LoginTVInvitado);
+        loginTVRegister = findViewById(R.id.LoginTVRegister);
+
+        SharedPreferences sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        loginButton.setOnClickListener(v -> {
+            String email = loginTILEmail.getEditText().getText().toString().trim();
+            String password = loginTILPassword.getEditText().getText().toString().trim();
+
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(Login.this, "Email y contraseña son obligatorios", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            loginUser(email, password, editor);
         });
-        Button loginButton = findViewById(R.id.LoginButton);
-        TextView loginTVInvitado = findViewById(R.id.LoginTVInvitado);
-        TextView loginTVRegister = findViewById(R.id.LoginTVRegister);
-        TextInputLayout loginTILUser = findViewById(R.id.LoginTILuserName);
-        TextInputLayout loginTILPassword = findViewById(R.id.LoginTILpassword);
 
-        loginTILPassword.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                String password = s.toString();
+        loginTVRegister.setOnClickListener(v -> {
+            startActivity(new Intent(Login.this, Register.class));
+        });
 
-                if (password.isEmpty()) {
-                    loginTILPassword.setErrorEnabled(true);
-                    loginTILPassword.setError("Tu contraseña está vacía");
+        loginTVInvitado.setOnClickListener(v -> {
+            startActivity(new Intent(Login.this, MainActivity.class));
+            finish();
+        });
+    }
+
+    private void loginUser(String email, String password, SharedPreferences.Editor editor) {
+        new Thread(() -> {
+            try {
+                // Cambia la IP a la de tu PC donde corre Django
+                URL url = new URL("http://10.0.2.2:8000/api/login/");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setDoOutput(true);
+
+                JSONObject body = new JSONObject();
+                body.put("email", email);
+                body.put("password", password);
+
+                OutputStream os = conn.getOutputStream();
+                os.write(body.toString().getBytes("UTF-8"));
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+                InputStream is = (responseCode == 200) ? conn.getInputStream() : conn.getErrorStream();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                StringBuilder result = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) result.append(line);
+                reader.close();
+
+                JSONObject response = new JSONObject(result.toString());
+
+                if (response.getBoolean("success")) {
+                    JSONObject data = response.getJSONObject("data");
+                    String token = data.getString("token");
+                    String refreshToken = data.getString("refreshToken");
+
+                    // Guardar tokens y email en SharedPreferences
+                    editor.putString("accessToken", token);
+                    editor.putString("refreshToken", refreshToken);
+                    editor.putString("email", email);
+                    editor.apply();
+
+                    runOnUiThread(() -> {
+                        Toast.makeText(Login.this, "Login exitoso", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(Login.this, MainActivity.class));
+                        finish();
+                    });
+
                 } else {
-                    loginTILPassword.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-
-        loginTILUser.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                String username = s.toString();
-                if (username.isEmpty()) {
-                    loginTILUser.setErrorEnabled(true);
-                    loginTILUser.setError("Tu nombre está vacío");
-                } else {
-                    loginTILUser.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-
-        FormUtils formUtils = new FormUtils();
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String savedEmail = sharedPref.getString("email", "");
-        String hashedPassword = sharedPref.getString("password", "");
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean canContinue = true;
-
-                if (formUtils.isTILEmpty(loginTILUser)) {
-                    loginTILUser.setErrorEnabled(true);
-                    loginTILUser.setError("Necesitas acceder con un nombre de usuario.");
-                    canContinue = false;
+                    runOnUiThread(() -> {
+                        try {
+                            String error = response.getJSONArray("errors").getString(0);
+                            Toast.makeText(Login.this, "Error: " + error, Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(Login.this, "Error desconocido", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
 
-                String inputText = loginTILUser.getEditText().getText().toString();
-
-                if (!formUtils.checkUser(inputText, savedEmail)) {
-                    loginTILUser.setErrorEnabled(true);
-                    loginTILUser.setError("Email incorrecto.");
-                    canContinue = false;
-                }
-
-                if (formUtils.isTILEmpty(loginTILPassword)) {
-                    loginTILPassword.setErrorEnabled(true);
-                    loginTILPassword.setError("La contraseña está vacía.");
-                    canContinue = false;
-                } else if (!formUtils.checkPassword(formUtils.getTILText(loginTILPassword), hashedPassword)) {
-                    loginTILPassword.setErrorEnabled(true);
-                    loginTILPassword.setError("La contraseña es incorrecta.");
-                    canContinue = false;
-                }
-
-                if (canContinue) {
-                    Toast.makeText(Login.this, "Bienvenido " + formUtils.getTILText(loginTILUser), Toast.LENGTH_SHORT).show();
-                    Intent intentMain = new Intent(Login.this, MainActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("nombre", String.valueOf(loginTILUser.getEditText().getText()));
-                    intentMain.putExtras(bundle);
-                    startActivity(intentMain);
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(Login.this, "Error de conexión", Toast.LENGTH_SHORT).show());
             }
-        });
-
-        loginTVInvitado.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentMain = new Intent(Login.this, MainActivity.class);
-                startActivity(intentMain);
-                finish();
-            }
-        });
-
-        loginTVRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentRegister = new Intent(Login.this, Register.class);
-                startActivity(intentRegister);
-            }
-        });
+        }).start();
     }
 }

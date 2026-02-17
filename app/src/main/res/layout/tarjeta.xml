@@ -23,14 +23,29 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <!-- Imagen del animal -->
-            <ImageView
-                android:id="@+id/imagenTarjetaDog"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop" />
+                android:layout_height="200dp">
 
-            <!-- Nombre -->
+                <ImageView
+                    android:id="@+id/imagenTarjetaDog"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:id="@+id/btnFavorito"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/ic_favorite_border"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:visibility="gone"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </FrameLayout>
+
             <TextView
                 android:id="@+id/textoNombre"
                 android:layout_width="match_parent"
@@ -41,7 +56,6 @@
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"/>
 
-            <!-- Dueño -->
             <TextView
                 android:id="@+id/textoDuenyo"
                 android:layout_width="match_parent"
@@ -50,7 +64,6 @@
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"/>
 
-            <!-- Categoría -->
             <TextView
                 android:id="@+id/textoCategoria"
                 android:layout_width="match_parent"
@@ -59,7 +72,6 @@
                 android:textSize="14sp"
                 android:layout_marginTop="2dp"/>
 
-            <!-- Refugio -->
             <TextView
                 android:id="@+id/textoRefugio"
                 android:layout_width="match_parent"
