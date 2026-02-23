@@ -61,53 +61,69 @@ public class DogRecycler extends RecyclerView.Adapter<DogRecycler.DogViewHolder>
         } else {
             holder.btnFavorito.setVisibility(View.GONE);
         }
+        if (tablaActual.equals("adoptados") || tablaActual.equals("favoritos")) {
+            holder.btnFavorito.setVisibility(View.VISIBLE);
+
+            // Opcional: Cambia el icono para que el usuario sepa que en favoritos es para borrar
+            if (tablaActual.equals("favoritos")) {
+                holder.btnFavorito.setImageResource(android.R.drawable.ic_menu_delete); // O un icono de corazón roto
+            } else {
+                holder.btnFavorito.setImageResource(R.drawable.ic_favorite_border); // Tu icono normal
+            }
+        } else {
+            holder.btnFavorito.setVisibility(View.GONE);
+        }
 
         holder.btnFavorito.setOnClickListener(v -> {
-            Toast.makeText(context, "Guardando en favoritos...", Toast.LENGTH_SHORT).show();
+            if (tablaActual.equals("favoritos")) {
+                hacerLlamadaEliminarFavorito(dog, position);
+            } else {
+                // --- TU LÓGICA ACTUAL DE GUARDAR ---
+                Toast.makeText(context, "Guardando en favoritos...", Toast.LENGTH_SHORT).show();
+                // 1. Convertimos los textos simples a RequestBody (el formato que exige Multipart)
+                okhttp3.RequestBody nombrePart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getNombre() != null ? dog.getNombre() : "");
+                okhttp3.RequestBody duenyoPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getDuenyo() != null ? dog.getDuenyo() : "");
+                okhttp3.RequestBody edadPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(dog.getEdad()));
+                okhttp3.RequestBody localizacionPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getLocalizacion() != null ? dog.getLocalizacion() : "");
+                okhttp3.RequestBody descripcionPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getDescripcion() != null ? dog.getDescripcion() : "");
+                okhttp3.RequestBody categoriaPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getCategoria() != null ? dog.getCategoria() : "Otro");
 
-            // 1. Convertimos los textos simples a RequestBody (el formato que exige Multipart)
-            okhttp3.RequestBody nombrePart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getNombre() != null ? dog.getNombre() : "");
-            okhttp3.RequestBody duenyoPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getDuenyo() != null ? dog.getDuenyo() : "");
-            okhttp3.RequestBody edadPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(dog.getEdad()));
-            okhttp3.RequestBody localizacionPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getLocalizacion() != null ? dog.getLocalizacion() : "");
-            okhttp3.RequestBody descripcionPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getDescripcion() != null ? dog.getDescripcion() : "");
-            okhttp3.RequestBody categoriaPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getCategoria() != null ? dog.getCategoria() : "Otro");
+                // ATENCIÓN: Asegúrate de que este nombre ("es_refugio" o "esRefugio") coincide con lo que espera Django en tu ApiInterface
+                okhttp3.RequestBody refugioPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(dog.getEsRefugio()));
+                okhttp3.RequestBody razaPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getRaza() != null ? dog.getRaza() : "sin raza");
 
-            // ATENCIÓN: Asegúrate de que este nombre ("es_refugio" o "esRefugio") coincide con lo que espera Django en tu ApiInterface
-            okhttp3.RequestBody refugioPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(dog.getEsRefugio()));
-            okhttp3.RequestBody razaPart = okhttp3.RequestBody.create(okhttp3.MultipartBody.FORM, dog.getRaza() != null ? dog.getRaza() : "sin raza");
+                // 2. Usamos Glide para descargar la foto y convertirla en bits
+                Glide.with(context)
+                        .asBitmap()
+                        .load(dog.getImagen())
+                        .into(new com.bumptech.glide.request.target.CustomTarget<android.graphics.Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull android.graphics.Bitmap resource, @androidx.annotation.Nullable com.bumptech.glide.request.transition.Transition<? super android.graphics.Bitmap> transition) {
 
-            // 2. Usamos Glide para descargar la foto y convertirla en bits
-            Glide.with(context)
-                    .asBitmap()
-                    .load(dog.getImagen())
-                    .into(new com.bumptech.glide.request.target.CustomTarget<android.graphics.Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull android.graphics.Bitmap resource, @androidx.annotation.Nullable com.bumptech.glide.request.transition.Transition<? super android.graphics.Bitmap> transition) {
+                                // Convertimos el Bitmap a una cadena de bits (ByteArray)
+                                java.io.ByteArrayOutputStream stream = new java.io.ByteArrayOutputStream();
+                                resource.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, stream);
+                                byte[] byteArray = stream.toByteArray();
 
-                            // Convertimos el Bitmap a una cadena de bits (ByteArray)
-                            java.io.ByteArrayOutputStream stream = new java.io.ByteArrayOutputStream();
-                            resource.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, stream);
-                            byte[] byteArray = stream.toByteArray();
+                                // Creamos la parte de la imagen para Retrofit
+                                okhttp3.RequestBody requestFile = okhttp3.RequestBody.create(okhttp3.MediaType.parse("image/jpeg"), byteArray);
+                                okhttp3.MultipartBody.Part bodyImagen = okhttp3.MultipartBody.Part.createFormData("imagen", "favorito.jpg", requestFile);
 
-                            // Creamos la parte de la imagen para Retrofit
-                            okhttp3.RequestBody requestFile = okhttp3.RequestBody.create(okhttp3.MediaType.parse("image/jpeg"), byteArray);
-                            okhttp3.MultipartBody.Part bodyImagen = okhttp3.MultipartBody.Part.createFormData("imagen", "favorito.jpg", requestFile);
+                                // 3. Hacemos la llamada a la API
+                                hacerLlamadaFavoritos(nombrePart, duenyoPart, edadPart, localizacionPart, descripcionPart, categoriaPart, refugioPart, razaPart, bodyImagen, dog.getNombre());
+                            }
 
-                            // 3. Hacemos la llamada a la API
-                            hacerLlamadaFavoritos(nombrePart, duenyoPart, edadPart, localizacionPart, descripcionPart, categoriaPart, refugioPart, razaPart, bodyImagen, dog.getNombre());
-                        }
+                            @Override
+                            public void onLoadCleared(@androidx.annotation.Nullable android.graphics.drawable.Drawable placeholder) {
+                            }
 
-                        @Override
-                        public void onLoadCleared(@androidx.annotation.Nullable android.graphics.drawable.Drawable placeholder) {
-                        }
-
-                        @Override
-                        public void onLoadFailed(@androidx.annotation.Nullable android.graphics.drawable.Drawable errorDrawable) {
-                            // Si el perrito NO tiene foto o falla la descarga, enviamos los datos sin imagen
-                            hacerLlamadaFavoritos(nombrePart, duenyoPart, edadPart, localizacionPart, descripcionPart, categoriaPart, refugioPart, razaPart, null, dog.getNombre());
-                        }
-                    });
+                            @Override
+                            public void onLoadFailed(@androidx.annotation.Nullable android.graphics.drawable.Drawable errorDrawable) {
+                                // Si el perrito NO tiene foto o falla la descarga, enviamos los datos sin imagen
+                                hacerLlamadaFavoritos(nombrePart, duenyoPart, edadPart, localizacionPart, descripcionPart, categoriaPart, refugioPart, razaPart, null, dog.getNombre());
+                            }
+                        });
+            }
         });
 
         holder.itemView.setOnClickListener(v -> {
@@ -177,5 +193,33 @@ public class DogRecycler extends RecyclerView.Adapter<DogRecycler.DogViewHolder>
             dogImage = itemView.findViewById(R.id.imagenTarjetaDog);
             btnFavorito = itemView.findViewById(R.id.btnFavorito);
         }
+    }
+    private void hacerLlamadaEliminarFavorito(DogModel dog, int position) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        // Usamos el nombre y dueño para identificarlo en Django
+        Call<Void> call = apiService.eliminarFavorito(dog.getNombre(), dog.getDuenyo());
+
+        call.enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // 1. Borramos de la lista local
+                    dogModels.remove(position);
+                    // 2. Notificamos al adaptador para que el perrito "desaparezca"
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, dogModels.size());
+
+                    Toast.makeText(context, dog.getNombre() + " eliminado de favoritos", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Error al eliminar: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Toast.makeText(context, "Error de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
