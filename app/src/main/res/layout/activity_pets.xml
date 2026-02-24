@@ -18,7 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="15dp"
             android:paddingBottom="20dp">
 
             <ImageView
@@ -37,7 +38,6 @@
                 android:id="@+id/menuHamburguesa"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="10dp"
                 android:src="@drawable/ic_menu"
                 android:clickable="true"
                 android:focusable="true" />
@@ -88,7 +88,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:animateLayoutChanges="true">
 
                             <ImageView
                                 android:id="@+id/ivPetImage1"
@@ -108,6 +109,18 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Nombre: Aslan"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:id="@+id/tvPetAge1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Edad: 5"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:id="@+id/tvPetRaza1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Raza: "
                                     android:textStyle="bold" />
 
                                 <ImageView
@@ -152,6 +165,18 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Nombre: Chulapo"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:id="@+id/tvPetAge2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Edad: 5"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:id="@+id/tvPetRaza2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Raza: "
                                     android:textStyle="bold" />
 
                                 <ImageView
