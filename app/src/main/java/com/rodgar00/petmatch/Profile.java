@@ -48,8 +48,6 @@ public class Profile extends Activity {
 
         navigationView = findViewById(R.id.navView);
 
-
-
         menuHamburguesa.setOnClickListener(v -> {
 
             drawerLayout.openDrawer(GravityCompat.END);
