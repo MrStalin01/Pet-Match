@@ -46,7 +46,8 @@
             android:exported="false"/>
         <activity android:name=".ProfileDog"
             android:exported="false"/>
-
+        <activity android:name=".EditorPet"
+            android:exported="false"/>
 
         <activity android:name=".Refugio"
             android:exported="false"/>

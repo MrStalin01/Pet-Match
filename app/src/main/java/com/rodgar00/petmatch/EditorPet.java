@@ -23,7 +23,7 @@ public class EditorPet extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pets);
+        setContentView(R.layout.activity_profile_pets);
 
         ImageView logoApp = findViewById(R.id.logoApp);
 

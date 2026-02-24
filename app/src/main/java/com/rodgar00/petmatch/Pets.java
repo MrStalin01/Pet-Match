@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.navigation.NavigationView;
 
 
@@ -20,6 +23,22 @@ public class Pets extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pets);
+
+        LinearLayout cardAslan = findViewById(R.id.ivPet1);
+        androidx.cardview.widget.CardView cardChulapo = findViewById(R.id.cardPet2);
+
+// IMPORTANTE: Verifica que no sean nulos antes de asignar el clic
+        if (cardAslan != null) {
+            cardAslan.setOnClickListener(v -> {
+                irAEditor("Aslan", "5", "Aslantico", "android.resource://" + getPackageName() + "/" + R.drawable.aslantico);
+            });
+        }
+
+        if (cardChulapo != null) {
+            cardChulapo.setOnClickListener(v -> {
+                irAEditor("Chulapo", "5", "Perro Mestizo", "android.resource://" + getPackageName() + "/" + R.drawable.chulapo);
+            });
+        }
 
         ImageView logoApp = findViewById(R.id.logoApp);
 
@@ -58,6 +77,14 @@ public class Pets extends Activity {
             drawerLayout.closeDrawer(GravityCompat.END);
             return true;
         });
+    }
+    private void irAEditor(String nombre, String edad, String raza, String imagenRes) {
+        Intent intent = new Intent(Pets.this, EditorPet.class);
+        intent.putExtra("nombre", nombre);
+        intent.putExtra("Edad", edad);
+        intent.putExtra("Raza", raza);
+        intent.putExtra("imagen", imagenRes);
+        startActivity(intent);
     }
 
 }
