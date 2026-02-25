@@ -64,4 +64,16 @@ public interface ApiInterface {
             @Query("nombre") String nombre,
             @Query("duenyo") String duenyo
     );
+
+    @GET("mascotas_personales/")
+    Call<List<DogModel>> getMascotasPersonales();
+
+    @POST("mascotas_personales/")
+    Call<DogModel> crearMascotaPersonal(
+            @Part("nombre") RequestBody nombre,
+            @Part("edad") RequestBody edad,
+            @Part("descripcion") RequestBody descripcion,
+            @Part MultipartBody.Part imagen
+    );
+
 }

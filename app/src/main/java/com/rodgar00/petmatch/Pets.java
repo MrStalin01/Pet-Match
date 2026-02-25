@@ -23,11 +23,18 @@ public class Pets extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pets);
+        com.google.android.material.floatingactionbutton.FloatingActionButton btnAddPet = findViewById(R.id.btnAddPet);
+        if (btnAddPet != null) {
+            btnAddPet.setOnClickListener(v -> {
+                Intent intent = new Intent(Pets.this, ProfileMascotaPersonal.class);
+                // Usamos 100 como código de petición para identificar esta acción luego
+                startActivityForResult(intent, 100);
+            });
+        }
 
         LinearLayout cardAslan = findViewById(R.id.ivPet1);
         androidx.cardview.widget.CardView cardChulapo = findViewById(R.id.cardPet2);
 
-// IMPORTANTE: Verifica que no sean nulos antes de asignar el clic
         if (cardAslan != null) {
             cardAslan.setOnClickListener(v -> {
                 irAEditor("Aslan", "5", "Aslantico", "android.resource://" + getPackageName() + "/" + R.drawable.aslantico);
