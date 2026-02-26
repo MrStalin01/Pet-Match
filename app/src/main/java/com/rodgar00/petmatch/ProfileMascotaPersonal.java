@@ -1,6 +1,7 @@
 package com.rodgar00.petmatch;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -87,37 +88,46 @@ public class ProfileMascotaPersonal extends Activity {
     }
 
     private void SubirMascotaPersonal(String nombre, String edad, String raza) {
+        // 1. Recuperar el email guardado
+        SharedPreferences sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String correoLogueado = sharedPref.getString("email", "");
+
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
+        // 2. Crear los RequestBody de texto
         RequestBody rbNombre = RequestBody.create(MultipartBody.FORM, nombre);
         RequestBody rbEdad = RequestBody.create(MultipartBody.FORM, edad);
         RequestBody rbRaza = RequestBody.create(MultipartBody.FORM, raza);
+        RequestBody rbEmail = RequestBody.create(MultipartBody.FORM, correoLogueado);
 
-        // Preparar la imagen
-        MultipartBody.Part bodyImagen = null;
+        // 3. Preparar la imagen (MultipartBody.Part)
+        MultipartBody.Part imagePart = null; // Cambiamos el nombre para no repetir
         if (imageUri != null) {
             try {
                 InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                // Función manual para leer los bytes sin IOUtils
                 byte[] bytes = getBytes(inputStream);
 
                 RequestBody requestFile = RequestBody.create(
                         MediaType.parse(getContentResolver().getType(imageUri)),
                         bytes
                 );
-                bodyImagen = MultipartBody.Part.createFormData("imagen", "mascota.jpg", requestFile);
+                // "imagen" debe coincidir con el nombre en Django
+                imagePart = MultipartBody.Part.createFormData("imagen", "mascota.jpg", requestFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        Call<DogModel> call = apiInterface.crearMascotaPersonal(rbNombre, rbEdad, rbRaza, bodyImagen);
+        // 4. Llamar a la API (Asegúrate de que el orden coincida con tu ApiInterface)
+        // Orden: nombre, edad, raza, email, imagen
+        Call<DogModel> call = apiInterface.crearMascotaPersonal(rbNombre, rbEdad, rbRaza, rbEmail, imagePart);
+
         call.enqueue(new Callback<DogModel>() {
             @Override
             public void onResponse(Call<DogModel> call, Response<DogModel> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(ProfileMascotaPersonal.this, "¡Mascota guardada!", Toast.LENGTH_SHORT).show();
-                    setResult(RESULT_OK); // Esto avisa a Pets.java para que refresque la lista
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     Toast.makeText(ProfileMascotaPersonal.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -126,7 +136,7 @@ public class ProfileMascotaPersonal extends Activity {
 
             @Override
             public void onFailure(Call<DogModel> call, Throwable t) {
-                Toast.makeText(ProfileMascotaPersonal.this, "Fallo de conexión", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileMascotaPersonal.this, "Fallo de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

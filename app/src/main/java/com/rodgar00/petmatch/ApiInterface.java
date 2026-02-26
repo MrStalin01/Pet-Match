@@ -75,6 +75,7 @@ public interface ApiInterface {
             @Part("nombre") RequestBody nombre,
             @Part("edad") RequestBody edad,
             @Part("raza") RequestBody raza,
+            @Part("email_propietario") RequestBody email,
             @Part MultipartBody.Part imagen
     );
 
