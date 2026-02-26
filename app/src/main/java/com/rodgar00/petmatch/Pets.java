@@ -2,6 +2,7 @@ package com.rodgar00.petmatch;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -84,8 +85,20 @@ public class Pets extends Activity {
     }
 
     private void cargarMascotas() {
+        SharedPreferences sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String correoLogueado = sharedPref.getString("email", null);
+
+        // 2. Si no hay correo (es invitado), mostrar mensaje y no llamar a la API
+        if (correoLogueado == null) {
+            petList.clear();
+            adapter.notifyDataSetChanged();
+            Toast.makeText(this, "Inicia sesión para ver tus mascotas", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 3. Llamar a la API pasando el correo
         ApiInterface api = ApiClient.getClient().create(ApiInterface.class);
-        Call<List<DogModel>> call = api.getMascotasPersonales();
+        Call<List<DogModel>> call = api.getMascotasPersonales(correoLogueado);
 
         call.enqueue(new Callback<List<DogModel>>() {
             @Override
@@ -94,18 +107,12 @@ public class Pets extends Activity {
                     petList.clear();
                     petList.addAll(response.body());
                     adapter.notifyDataSetChanged();
-
-                    if (petList.isEmpty()) {
-                        Toast.makeText(Pets.this, "No tienes mascotas guardadas", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(Pets.this, "Error del servidor: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<DogModel>> call, Throwable t) {
-                Toast.makeText(Pets.this, "Fallo de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Pets.this, "Error de red", Toast.LENGTH_SHORT).show();
             }
         });
     }

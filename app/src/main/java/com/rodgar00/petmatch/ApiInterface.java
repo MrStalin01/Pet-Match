@@ -67,6 +67,7 @@ public interface ApiInterface {
 
     @GET("mascotas_personales/")
     Call<List<DogModel>> getMascotasPersonales(
+            @Query("email") String email
     );
     @Multipart
     @POST("mascotas_personales/")
