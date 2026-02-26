@@ -13,6 +13,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 
+import java.io.InputStream;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ProfileMascotaPersonal extends Activity {
     private EditText editNombre, editEdad, editRaza;
     private Button btnSeleccionarImagen, btnAgregarAnimal;
@@ -74,6 +83,62 @@ public class ProfileMascotaPersonal extends Activity {
         resultIntent.putExtra("nuevo_imagen", uriString);
 
         setResult(RESULT_OK, resultIntent);
-        finish(); // Cierra esta actividad y vuelve a Pets.java
+        SubirMascotaPersonal(nombre, edad, raza);
+    }
+
+    private void SubirMascotaPersonal(String nombre, String edad, String raza) {
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
+        RequestBody rbNombre = RequestBody.create(MultipartBody.FORM, nombre);
+        RequestBody rbEdad = RequestBody.create(MultipartBody.FORM, edad);
+        RequestBody rbRaza = RequestBody.create(MultipartBody.FORM, raza);
+
+        // Preparar la imagen
+        MultipartBody.Part bodyImagen = null;
+        if (imageUri != null) {
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                // Función manual para leer los bytes sin IOUtils
+                byte[] bytes = getBytes(inputStream);
+
+                RequestBody requestFile = RequestBody.create(
+                        MediaType.parse(getContentResolver().getType(imageUri)),
+                        bytes
+                );
+                bodyImagen = MultipartBody.Part.createFormData("imagen", "mascota.jpg", requestFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        Call<DogModel> call = apiInterface.crearMascotaPersonal(rbNombre, rbEdad, rbRaza, bodyImagen);
+        call.enqueue(new Callback<DogModel>() {
+            @Override
+            public void onResponse(Call<DogModel> call, Response<DogModel> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(ProfileMascotaPersonal.this, "¡Mascota guardada!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK); // Esto avisa a Pets.java para que refresque la lista
+                    finish();
+                } else {
+                    Toast.makeText(ProfileMascotaPersonal.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DogModel> call, Throwable t) {
+                Toast.makeText(ProfileMascotaPersonal.this, "Fallo de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public byte[] getBytes(InputStream inputStream) throws java.io.IOException {
+        java.io.ByteArrayOutputStream byteBuffer = new java.io.ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 }

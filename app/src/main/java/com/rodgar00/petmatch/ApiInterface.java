@@ -66,13 +66,14 @@ public interface ApiInterface {
     );
 
     @GET("mascotas_personales/")
-    Call<List<DogModel>> getMascotasPersonales();
-
+    Call<List<DogModel>> getMascotasPersonales(
+    );
+    @Multipart
     @POST("mascotas_personales/")
     Call<DogModel> crearMascotaPersonal(
             @Part("nombre") RequestBody nombre,
             @Part("edad") RequestBody edad,
-            @Part("descripcion") RequestBody descripcion,
+            @Part("raza") RequestBody raza,
             @Part MultipartBody.Part imagen
     );
 
