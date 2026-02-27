@@ -118,8 +118,6 @@ public class ProfileMascotaPersonal extends Activity {
             }
         }
 
-        // 4. Llamar a la API (Asegúrate de que el orden coincida con tu ApiInterface)
-        // Orden: nombre, edad, raza, email, imagen
         Call<DogModel> call = apiInterface.crearMascotaPersonal(rbNombre, rbEdad, rbRaza, rbEmail, imagePart);
 
         call.enqueue(new Callback<DogModel>() {
